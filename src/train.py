@@ -108,8 +108,8 @@ dset_loaders = {
 ########## 
 print('Load model')
 
-saved_model_fn = 'resnet' + '-%s' % (args.depth) + '_' + strftime('%m%d_%H%M')
-old_model = './checkpoint/' + 'resnet' + '-%s' % (args.depth) + '_' + args.model_path + '.t7'
+saved_model_fn = args.net_type + '-%s' % (args.depth) + '_' + strftime('%m%d_%H%M')
+old_model = './checkpoint/' + args.net_type + '-%s' % (args.depth) + '_' + args.model_path + '.t7'
 if args.train_from == 2 and os.path.isfile(old_model):
     print("| Load pretrained at  %s..." % old_model)
     checkpoint = torch.load(old_model, map_location=lambda storage, loc: storage)
@@ -119,7 +119,10 @@ if args.train_from == 2 and os.path.isfile(old_model):
     print('previous top3\t%.4f'% best_top3)
     print('=============================================')
 else:
-    model = MyResNet(args.depth, len(set(train_lbs)))
+    if args.net_type == 'densenet':
+        model = MyDenseNet(args.depth, len(set(train_lbs)))
+    else:
+        model = MyResNet(args.depth, len(set(train_lbs)))
 
 ##################
 print('Start training ... ')
