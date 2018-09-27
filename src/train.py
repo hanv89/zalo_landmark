@@ -15,7 +15,7 @@ from time import time, strftime
 
 parser = argparse.ArgumentParser(description='PyTorch Digital Mammography Training')
 parser.add_argument('--lr', default=1e-2, type=float, help='learning rate')
-parser.add_argument('--net_type', default='densenet'', type=str, help='model')
+parser.add_argument('--net_type', default='densenet', type=str, help='model')
 parser.add_argument('--depth', default=161, type=int, help='depth of model')
 parser.add_argument('--weight_decay', default=5e-6, type=float, help='weight decay')
 parser.add_argument('--finetune', '-f', action='store_true', help='Fine tune pretrained model')
