@@ -148,7 +148,7 @@ class MyDenseNet(nn.Module):
 
         # if to_layer = -1, frozen all
         child_counter = 0
-        for name, module in self.model.features.modules().items():
+        for name, module in self.model.features._modules.items():
             if child_counter <= to_layer:
                 print("block ", name, " was frozen")
                 for param in module.parameters():
