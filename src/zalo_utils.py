@@ -143,9 +143,11 @@ class MyDenseNet(nn.Module):
     def forward(self, x):
         # pdb.set_trace()
 
-        x = self.shared(x)
-        x = torch.squeeze(x)
-        return self.target(x)
+        features = self.shared(x)
+        out = F.relu(features, inplace=True)
+        out = F.avg_pool2d(out, kernel_size=7, stride=1).view(features.size(0), -1)
+        # x = torch.squeeze(x)
+        return self.target(out)
 
     def frozen_until(self, to_layer):
         print('Frozen shared part until %d-th layer, inclusive'%to_layer)
