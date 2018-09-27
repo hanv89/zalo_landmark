@@ -128,43 +128,36 @@ class MyDenseNet(nn.Module):
     def __init__(self, depth, num_classes, pretrained = True):
         super(MyDenseNet, self).__init__()
         if depth == 121:
-            model = models.densenet121(pretrained)
+            self.model = models.densenet121(pretrained)
         elif depth == 169:
-            model = models.densenet169(pretrained)
+            self.model = models.densenet169(pretrained)
         elif depth == 201:
-            model = models.densenet201(pretrained)
-        elif depth == 161:
-            model = models.densenet161(pretrained)
+            self.model = models.densenet201(pretrained)
+        else:
+            self.model = models.densenet161(pretrained)
 
-        self.num_ftrs = model.classifier.in_features
-
-        self.shared = nn.Sequential(*list(model.children())[:-1])
-        self.target = nn.Sequential(nn.Linear(self.num_ftrs, num_classes))
+        self.num_ftrs = self.model.classifier.in_features
+        self.model.classifier = nn.Sequential(nn.Linear(self.num_ftrs, num_classes))
 
     def forward(self, x):
         # pdb.set_trace()
-
-        features = self.shared(x)
-        out = F.relu(features, inplace=True)
-        out = F.avg_pool2d(out, kernel_size=7, stride=1).view(features.size(0), -1)
-        # x = torch.squeeze(x)
-        return self.target(out)
+        return self.model.forward(x)
 
     def frozen_until(self, to_layer):
         print('Frozen shared part until %d-th layer, inclusive'%to_layer)
 
         # if to_layer = -1, frozen all
         child_counter = 0
-        for child in self.shared.children():
+        for name, module in self.model.features.modules().items():
             if child_counter <= to_layer:
-                print("child ", child_counter, " was frozen")
-                for param in child.parameters():
+                print("block ", name, " was frozen")
+                for param in module.parameters():
                     param.requires_grad = False
                 # frozen deeper children? check
                 # https://spandan-madan.github.io/A-Collection-of-important-tasks-in-pytorch/
             else:
-                print("child ", child_counter, " was not frozen")
-                for param in child.parameters():
+                print("block ", name, " was not frozen")
+                for param in module.parameters():
                     param.requires_grad = True
             child_counter += 1
 

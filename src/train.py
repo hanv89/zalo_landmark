@@ -32,7 +32,7 @@ parser.add_argument('--train_from', default=1,
                     choices=[0, 1, 2],  # 0: from scratch, 1: from pretrained Resnet, 2: specific checkpoint in model_path
                     type=int,
                     help="training from beginning (1) or from the most recent ckpt (0)")
-parser.add_argument('--frozen_until', '-fu', type=int, default = 1,
+parser.add_argument('--frozen_until', '-fu', type=int, default = 161,
                     help="freeze until --frozen_util block")
 parser.add_argument('--val_ratio', default=0.1, type=float, 
         help = "number of training samples per class")
