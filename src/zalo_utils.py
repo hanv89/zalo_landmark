@@ -13,6 +13,7 @@ import numpy as np
 import random
 import torch.backends.cudnn as cudnn
 from time import time
+import torch.nn.functional as F
 
 def get_fns_lbs(base_dir, json_file, pickle_fn = 'mydata.p', force = False):    
     pickle_fn = base_dir + pickle_fn 
